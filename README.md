@@ -53,3 +53,26 @@ class PersonAnonymizer(django_anonymizable.BaseAnonymizer):
    class Meta:
       model = Person
 ```
+
+## Management command
+
+Ensure that all field of your model are anonymizable:
+
+1. add `django_anonymizable` at the end of your `INSTALLED_APPS`
+2. load your anonymizers class in your app ready:
+3. run the `ensure_fields_are_anonymizable` command
+
+````py
+class MyAppConfig(AppConfig):
+    ...
+
+    def ready(self) -> None:
+        ...
+        # load anonymizers so managements command know that there is some subclasses of BaseAnonymizer
+        from myapp.anonymizers import *  # noqa
+
+        return super().ready()
+
+```shell
+django-manage ensure_fields_are_anonymizable
+````
