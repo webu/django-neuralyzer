@@ -72,6 +72,7 @@ class MyAppConfig(AppConfig):
         from myapp.anonymizers import *  # noqa
 
         return super().ready()
+```
 
 ```shell
 django-manage ensure_fields_are_anonymizable
