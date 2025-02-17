@@ -62,7 +62,7 @@ Ensure that all field of your model are anonymizable:
 2. load your anonymizers class in your app ready:
 3. run the `ensure_fields_are_anonymizable` command
 
-````py
+```py
 class MyAppConfig(AppConfig):
     ...
 
@@ -76,4 +76,4 @@ class MyAppConfig(AppConfig):
 
 ```shell
 django-manage ensure_fields_are_anonymizable
-````
+```
