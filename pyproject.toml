@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-anonymizable"
+description = "Anonymize specific django model for specific instance"
+authors = [
+    {name = "WebU dev team", email = "contact@webu.coop"},
+]
+readme = "README.md"
+dependencies = [
+    "django>=4.2",
+]
+dynamic=["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "django_anonymizable.__version__" }
+
+[tool.djlint]
+    profile = "django"
+    preserve_blank_lines = true
+    format_js = false
+    format_css = true
+
+[tool.ruff]
+    include = ["pyproject.toml", "django_anonymizable/**/*.py"]
+    line-length = 99
+    extend-exclude = [
+        "__pycache__",
+        "migrations"
+    ]
+
+[tool.ruff.lint]
+    select = [
+        "F401", # unused imports
+        "I",
+    ] # https://docs.astral.sh/ruff/rules
+
+[tool.ruff.lint.isort]
+    length-sort = false
+    force-single-line = true
+    force-sort-within-sections = true
+    known-first-party = ["webusi"]
+    known-third-party = ["parler", "wagtail", "oscar", "oscarapi", "diva", "diva_oscar", "diva_wagtail"]
+    section-order = ["future", "standard-library", "pylib", "django", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.lint.isort.sections]
+"django" = ["django"]
+"pylib" = ["dateutil"]
