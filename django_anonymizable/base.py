@@ -1,12 +1,15 @@
 from collections import OrderedDict
 from logging import getLogger
 
-from chunkator import chunkator_page
-
-from django_anonymizable.compat import bulk_update
-
-
 logger = getLogger(__name__)
+
+
+def custom_import(name):
+    components = name.split(".")
+    mod = __import__(components[0])
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
 
 
 class OrderedDeclaration(object):
@@ -48,84 +51,52 @@ def lazy_attribute(lazy_fn):
 
 
 class BaseAnonymizer(object):
-    def run(self, select_chunk_size=None, **bulk_update_kwargs):
+    def run(self, pks=None, select_chunk_size=None, **bulk_update_kwargs):
         self._declarations = self.get_declarations()
 
-        queryset = self.get_queryset()
+        queryset = self.get_queryset(pks=pks)
         update_fields = list(self._declarations.keys())
 
-        update_batch_size = bulk_update_kwargs.pop(
-            "batch_size", self._meta.update_batch_size
-        )
-
-        if select_chunk_size is None:
-            select_chunk_size = self._meta.select_chunk_size
-
-        if update_batch_size > select_chunk_size:
-            raise ValueError(
-                "update_batch_size ({}) should not be higher than "
-                "select_chunk_size ({})".format(update_batch_size, select_chunk_size)
-            )
-
         # info used in log messages
-        model_name = self._meta.model.__name__
-        current_batch = 0
+        model_name = self.Meta.model.__name__
 
-        for page in chunkator_page(queryset, chunk_size=select_chunk_size):
-            logger.info(
-                "Updating {}... {}-{}".format(
-                    model_name, current_batch, current_batch + select_chunk_size
-                )
+        logger.info("Updating {}...".format(model_name))
+
+        manager = self.get_manager()
+        objs = []
+        for obj in queryset:
+            self.patch_object(obj)
+            objs.append(obj)
+
+        if update_fields:
+            manager.bulk_update(
+                objs,
+                update_fields,
+                **dict(**bulk_update_kwargs),
             )
-            current_batch += select_chunk_size
+        else:
+            logger.info("Skiping bulk update for {}... No fields to update".format(model_name))
 
-            objs = []
-            for obj in page:
-                self.patch_object(obj)
-                objs.append(obj)
-
-            if update_fields:
-                bulk_update(
-                    objs,
-                    update_fields,
-                    self.get_manager(),
-                    **dict(batch_size=update_batch_size, **bulk_update_kwargs),
-                )
-            else:
-                logger.info(
-                    "Skiping bulk update for {}... No fields to update".format(
-                        model_name
-                    )
-                )
-
-        if current_batch == 0:
-            logger.info("{} has no records".format(model_name))
-
-    def get_meta(self):
-        meta = self.Meta()
-        if not hasattr(meta, "select_chunk_size"):
-            # Chunk size to iterate over
-            meta.select_chunk_size = 5000
-        if not hasattr(meta, "update_batch_size"):
-            # Batch size for bulk updates
-            meta.update_batch_size = 200
-        return meta
-
-    _meta = property(get_meta)
+        # Cascade to one to one relation
+        if hasattr(self.Meta, "onetoone"):
+            for relation, class_import in self.Meta.onetoone.items():
+                anonymizer = custom_import(class_import)
+                for obj in objs:
+                    related_model = getattr(obj, relation)
+                    if related_model:
+                        anonymizer().run(pks=[related_model.pk])
 
     def get_manager(self):
-        meta = self._meta
+        meta = self.Meta
         return getattr(meta, "manager", meta.model.objects)
 
-    _manager = property(get_manager)
-
-    def get_queryset(self):
+    def get_queryset(self, pks=None):
         """Override this if you want to delimit the objects that should be
         affected by anonymization
         """
         qs = self.get_manager().all()
-        if self.pk:
-            qs = qs.filter(pk=self.pk)
+        if pks:
+            qs = qs.filter(pk__in=pks)
         return qs
 
     def patch_object(self, obj):
