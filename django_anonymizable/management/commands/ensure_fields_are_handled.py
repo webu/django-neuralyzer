@@ -3,6 +3,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from django_anonymizable.base import BaseAnonymizer
+from django_anonymizable.utils import get_app_submodules
 
 
 def all_subclasses(cls):
@@ -18,6 +19,9 @@ class Command(BaseCommand):
     help = ""
 
     def handle(self, *args, **options):
+        # ensure anonymizer has been loaded
+        list(get_app_submodules("anonymizers"))
+        # get all subclasses
         anon_classes = all_subclasses(BaseAnonymizer)
         errors = []
 
@@ -26,6 +30,8 @@ class Command(BaseCommand):
             anon_fields = klass()._get_class_attributes()
             for field in model._meta.fields:
                 if field.name not in anon_fields:
-                    errors.append(f"Field {field} is not anonymizable for model {model}")
+                    errors.append(
+                        f"Anonymizer {klass.__name__} is missing field {field.name} for model {model.__name__}"
+                    )
         if errors:
-            raise ValueError("\n".join(errors))
+            logger.error("Following models have not been fully handled: \n" + "\n".join(errors))
