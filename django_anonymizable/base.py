@@ -2,6 +2,8 @@ from collections import OrderedDict
 import inspect
 from logging import getLogger
 
+from django.db.models import Q
+
 logger = getLogger(__name__)
 
 
@@ -52,10 +54,10 @@ def lazy_attribute(lazy_fn):
 
 
 class BaseAnonymizer(object):
-    def run(self, pks=None, select_chunk_size=None, **bulk_update_kwargs):
+    def run(self, filters=None, select_chunk_size=None, **bulk_update_kwargs):
         self._declarations = self.get_declarations()
 
-        queryset = self.get_queryset(pks=pks)
+        queryset = self.get_queryset(filters=filters)
         update_fields = list(self._declarations.keys())
 
         # info used in log messages
@@ -85,19 +87,24 @@ class BaseAnonymizer(object):
                 for obj in objs:
                     related_model = getattr(obj, relation)
                     if related_model:
-                        anonymizer().run(pks=[related_model.pk])
+                        anonymizer().run(filters={"pk": related_model.pk})
 
     def get_manager(self):
         meta = self.Meta
         return getattr(meta, "manager", meta.model.objects)
 
-    def get_queryset(self, pks=None):
+    def get_queryset(self, filters=None):
         """Override this if you want to delimit the objects that should be
         affected by anonymization
+
+        Args:
+          filters: Q object or dict
         """
         qs = self.get_manager().all()
-        if pks:
-            qs = qs.filter(pk__in=pks)
+        if isinstance(filters, dict):
+            qs = qs.filter(**filters)
+        elif isinstance(filters, Q):
+            qs = qs.filter(filters)
         return qs
 
     def patch_object(self, obj):
