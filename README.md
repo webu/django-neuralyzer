@@ -26,11 +26,11 @@ class PersonNeuralyzer(BaseNeuralyzer):
    class Meta:
       model = Person
 
-# run anonymizer: be cautious, this will affect your current database!
+# run neuralyzer: be cautious, this will affect your current database!
 person = Person.objects.last()
-# anonymize full table:
+# neuralyze full table:
 PersonNeuralyzer().run()
-# anonymize only some instance
+# neuralyze only some instance
 PersonNeuralyzer().run(filters={"pk": person.pk})
 ```
 
@@ -70,4 +70,4 @@ django-manage ensure_fields_are_handled
 
 In [Men in Black](https://meninblack.fandom.com/wiki/Neuralyzer), a "neuralyzer" is a tool that wipe the mind of anybody who sees the flash via isolating and editing certain element of their memory.
 
-This is what exactly what this django package intend to do (remove or fake some element of instances), so we find it funny to name it like that.
+This is exactly what this django package intent to do (remove or fake some attributes of instances), so we find it funny to name it like that.
