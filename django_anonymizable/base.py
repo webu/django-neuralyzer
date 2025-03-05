@@ -109,9 +109,7 @@ class BaseAnonymizer(object):
 
     def patch_object(self, obj):
         """Update object attributes with fake data provided by replacers"""
-        # using obj.__dict__ instead of getattr for performance reasons
-        # see https://stackoverflow.com/a/9791053/639465
-        fields = [field for field in self._declarations if obj.__dict__[field]]
+        fields = [field for field in self._declarations if getattr(obj, field)]
 
         for field in fields:
             replacer = self._declarations[field]
@@ -123,7 +121,7 @@ class BaseAnonymizer(object):
             else:
                 new_value = replacer
 
-            obj.__dict__[field] = new_value
+            setattr(obj, field, new_value)
 
         self.clean(obj)
 
