@@ -12,12 +12,12 @@ It also provide ability to target specific instance and not the whole database a
 Use `django-anonymizable.BaseAnonymizer` to define your anonymizer classes:
 
 ```py
-import anon
+from django_anonymizable.base import BaseAnonymizer
 
 from your_app.models import Person
 
-class PersonAnonymizer(anon.BaseAnonymizer):
-   email = anon.fake_email
+class PersonAnonymizer(BaseAnonymizer):
+   email = "example@anonymized.org"
 
    # You can use static values instead of callables
    is_admin = False
@@ -30,7 +30,7 @@ person = Person.objects.last()
 # anonymize full table:
 PersonAnonymizer().run()
 # anonymize only some instance
-PersonAnonymizer().run(pks=[person.pk])
+PersonAnonymizer().run(filters={"pk": person.pk})
 ```
 
 ### Lazy attributes
@@ -38,11 +38,11 @@ PersonAnonymizer().run(pks=[person.pk])
 Lazy attributes can be defined as inline lambdas or methods, as shown below, using the `django_anonymizable.lazy_attribute` function/decorator.
 
 ```py
-import django_anonymizable
+from django_anonymizable import BaseAnonymizer
 
 from your_app.models import Person
 
-class PersonAnonymizer(django_anonymizable.BaseAnonymizer):
+class PersonAnonymizer(BaseAnonymizer):
    name = anon.lazy_attribute(lambda o: 'x' * len(o.name))
 
    @lazy_attribute
