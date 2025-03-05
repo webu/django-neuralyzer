@@ -4,15 +4,9 @@ from logging import getLogger
 
 from django.db.models import Q
 
+from .utils import import_from_path
+
 logger = getLogger(__name__)
-
-
-def custom_import(name):
-    components = name.split(".")
-    mod = __import__(components[0])
-    for comp in components[1:]:
-        mod = getattr(mod, comp)
-    return mod
 
 
 class OrderedDeclaration(object):
@@ -83,7 +77,7 @@ class BaseAnonymizer(object):
         # Cascade to one to one relation
         if hasattr(self.Meta, "onetoone"):
             for relation, class_import in self.Meta.onetoone.items():
-                anonymizer = custom_import(class_import)
+                anonymizer = import_from_path(class_import)
                 for obj in objs:
                     related_model = getattr(obj, relation)
                     if related_model:

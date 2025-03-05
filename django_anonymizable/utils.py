@@ -4,6 +4,14 @@ from django.apps import apps
 from django.utils.module_loading import module_has_submodule
 
 
+def import_from_path(name):
+    components = name.split(".")
+    mod = __import__(components[0])
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
+
+
 def get_app_modules():
     """
     Generator function that yields a module object for each installed app
