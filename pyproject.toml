@@ -11,13 +11,13 @@ authors = [
 ]
 readme = "README.md"
 dependencies = [
-    "django>=4.2",
+    "django>=2.2",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
 ]
-license = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/webu/django-neuralyzer"
