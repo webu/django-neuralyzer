@@ -22,5 +22,5 @@ message_template = "Bump to {new_version}"
 tag_template = "{new_version}"
 
 [[file]]
-src = "django_anonymizable/__init__.py"
+src = "django_neuralyzer/__init__.py"
 

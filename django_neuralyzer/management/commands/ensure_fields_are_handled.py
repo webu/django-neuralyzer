@@ -2,8 +2,8 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from django_anonymizable.base import BaseNeuralyzer
-from django_anonymizable.utils import get_app_submodules
+from django_neuralyzer.base import BaseNeuralyzer
+from django_neuralyzer.utils import get_app_submodules
 
 
 def all_subclasses(cls):
