@@ -24,3 +24,5 @@ tag_template = "{new_version}"
 [[file]]
 src = "django_neuralyzer/__init__.py"
 
+[[file]]
+src = "pyproject.toml"

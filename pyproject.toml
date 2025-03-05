@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-neuralyzer"
+version = "0.0.0"
 description = "Anonymize specific django model for specific instance"
 authors = [
     {name = "WebU dev team", email = "contact@webu.coop"},
@@ -12,10 +13,15 @@ readme = "README.md"
 dependencies = [
     "django>=4.2",
 ]
-dynamic=["version"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
 
-[tool.setuptools.dynamic]
-version = { attr = "django_neuralyzer.__version__" }
+[project.urls]
+Homepage = "https://github.com/webu/django-neuralyzer"
+Issues = "https://github.com/webu/django-neuralyzer/issues"
 
 [tool.djlint]
     profile = "django"
