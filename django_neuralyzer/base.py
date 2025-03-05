@@ -150,7 +150,7 @@ class BaseNeuralyzer(object):
         """Return list of class attributes, which also includes methods and
         subclasses, ignoring any magic methods and reserved attributes
         """
-        reserved_names = list(BaseNeuralyzer.__dict__.keys()) + ["Meta"]
+        reserved_names = list(BaseNeuralyzer.__dict__.keys()) + ["Meta", "_declarations"]
 
         return {
             name: getattr(self, name)
