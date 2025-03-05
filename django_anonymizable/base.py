@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import inspect
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -153,7 +154,7 @@ class BaseAnonymizer(object):
         reserved_names = list(BaseAnonymizer.__dict__.keys()) + ["Meta"]
 
         return {
-            name: self.__class__.__dict__[name]
-            for name, value in self.__class__.__dict__.items()
+            name: getattr(self, name)
+            for name, value in inspect.getmembers(self)
             if not name.startswith("__") and name not in reserved_names
         }
