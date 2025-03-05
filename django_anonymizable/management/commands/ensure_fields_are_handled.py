@@ -2,7 +2,7 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from django_anonymizable.base import BaseAnonymizer
+from django_anonymizable.base import BaseNeuralyzer
 from django_anonymizable.utils import get_app_submodules
 
 
@@ -19,10 +19,10 @@ class Command(BaseCommand):
     help = ""
 
     def handle(self, *args, **options):
-        # ensure anonymizer has been loaded
-        list(get_app_submodules("anonymizers"))
+        # ensure neuralyzers has been loaded
+        list(get_app_submodules("neuralyzers"))
         # get all subclasses
-        anon_classes = all_subclasses(BaseAnonymizer)
+        anon_classes = all_subclasses(BaseNeuralyzer)
         errors = []
 
         for klass in anon_classes:
@@ -31,7 +31,7 @@ class Command(BaseCommand):
             for field in model._meta.fields:
                 if field.name not in anon_fields:
                     errors.append(
-                        f"Anonymizer {klass.__name__} is missing field {field.name} for model {model.__name__}"
+                        f"Neuralyzer {klass.__name__} is missing field {field.name} for model {model.__name__}"
                     )
         if errors:
             logger.error("Following models have not been fully handled: \n" + "\n".join(errors))

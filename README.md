@@ -1,22 +1,23 @@
-# Django anonymizable
+# Django Neuralyzer
 
 Anonymize instance data according to your need (GDPR, used in not-so-safe environments... )
 
 **Heavily inspired by [django-anon](https://github.com/Tesorio/django-anon/)**
 
-Like django-anon, django-anonymizable will help you anonymize your model instance so it can be shared among developers, helping to reproduce bugs and make performance improvements in a production-like environment.
+Like `django-anon`, `django-neuralyzer` will help you anonymize your model instance so it can be shared among developers, helping to reproduce bugs and make performance improvements in a production-like environment.
+
 It also provide ability to target specific instance and not the whole database at once, so it can be use for GDPR compliance or "forget about be" feature of your app.
 
 ## Usage
 
-Use `django-anonymizable.BaseAnonymizer` to define your anonymizer classes:
+Use `django-neuralyzer.BaseNeuralyzer` to define your neuralyzer classes:
 
 ```py
-from django_anonymizable.base import BaseAnonymizer
+from django_neuralyzer.base import BaseNeuralyzer
 
 from your_app.models import Person
 
-class PersonAnonymizer(BaseAnonymizer):
+class PersonNeuralyzer(BaseNeuralyzer):
    email = "example@anonymized.org"
 
    # You can use static values instead of callables
@@ -28,21 +29,21 @@ class PersonAnonymizer(BaseAnonymizer):
 # run anonymizer: be cautious, this will affect your current database!
 person = Person.objects.last()
 # anonymize full table:
-PersonAnonymizer().run()
+PersonNeuralyzer().run()
 # anonymize only some instance
-PersonAnonymizer().run(filters={"pk": person.pk})
+PersonNeuralyzer().run(filters={"pk": person.pk})
 ```
 
 ### Lazy attributes
 
-Lazy attributes can be defined as inline lambdas or methods, as shown below, using the `django_anonymizable.lazy_attribute` function/decorator.
+Lazy attributes can be defined as inline lambdas or methods, as shown below, using the `django_neuralyzer.lazy_attribute` function/decorator.
 
 ```py
-from django_anonymizable import BaseAnonymizer
+from django_neuralyzer import BaseNeuralyzer
 
 from your_app.models import Person
 
-class PersonAnonymizer(BaseAnonymizer):
+class PersonNeuralyzer(BaseNeuralyzer):
    name = anon.lazy_attribute(lambda o: 'x' * len(o.name))
 
    @lazy_attribute
@@ -56,11 +57,17 @@ class PersonAnonymizer(BaseAnonymizer):
 
 ## Management command
 
-Ensure that all field of your model are anonymizable:
+Ensure that all field of your model are handle by the neuralyzer:
 
-1. add `django_anonymizable` at the end of your `INSTALLED_APPS`
+1. add `django_neuralyzer` at the end of your `INSTALLED_APPS`
 2. run the `ensure_fields_are_handled` command
 
 ```shell
 django-manage ensure_fields_are_handled
 ```
+
+## Why neuralyzer ?
+
+In [Men in Black](https://meninblack.fandom.com/wiki/Neuralyzer), a "neuralyzer" is a tool that wipe the mind of anybody who sees the flash via isolating and editing certain element of their memory.
+
+This is what exactly what this django package intend to do (remove or fake some element of instances), so we find it funny to name it like that.

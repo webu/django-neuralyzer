@@ -47,7 +47,7 @@ def lazy_attribute(lazy_fn):
     return LazyAttribute(lazy_fn)
 
 
-class BaseAnonymizer(object):
+class BaseNeuralyzer(object):
     def run(self, filters=None, select_chunk_size=None, **bulk_update_kwargs):
         self._declarations = self.get_declarations()
 
@@ -77,11 +77,11 @@ class BaseAnonymizer(object):
         # Cascade to one to one relation
         if hasattr(self.Meta, "onetoone"):
             for relation, class_import in self.Meta.onetoone.items():
-                anonymizer = import_from_path(class_import)
+                neuralyzer = import_from_path(class_import)
                 for obj in objs:
                     related_model = getattr(obj, relation)
                     if related_model:
-                        anonymizer().run(filters={"pk": related_model.pk})
+                        neuralyzer().run(filters={"pk": related_model.pk})
 
     def get_manager(self):
         meta = self.Meta
@@ -150,7 +150,7 @@ class BaseAnonymizer(object):
         """Return list of class attributes, which also includes methods and
         subclasses, ignoring any magic methods and reserved attributes
         """
-        reserved_names = list(BaseAnonymizer.__dict__.keys()) + ["Meta"]
+        reserved_names = list(BaseNeuralyzer.__dict__.keys()) + ["Meta"]
 
         return {
             name: getattr(self, name)
