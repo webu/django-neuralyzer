@@ -204,3 +204,16 @@ class BaseTestCase(TestCase):
 
         neuralyzer = Neuralyzer()
         self.assertEqual(list(neuralyzer.get_declarations().keys()), ["a", "c", "b"])
+
+    def test_excluded_attributes(self):
+        class Neuralyzer(BaseNeuralyzer):
+            first_name = "toto"
+
+            class Meta:
+                noop = ["first_name"]
+
+        obj = models.person_factory()
+
+        neuralyzer = Neuralyzer()
+        neuralyzer.patch_object(obj)
+        self.assertEqual(obj.first_name, "A")

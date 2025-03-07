@@ -30,14 +30,16 @@ class Command(BaseCommand):
         for klass in anon_classes:
             print(f"Neuralyzer: {klass}")
             model = klass.Meta.model
-            anon_fields = klass()._get_class_attributes()
+            neuralyzer = klass()
+            anon_fields = neuralyzer._get_class_attributes()
+            noop_fields = neuralyzer._excluded_attributes
             model_fields = model._meta.fields
             model_fields_names = [field.name for field in model_fields]
             for field in model_fields:
                 if isinstance(field, (ManyToManyField, OneToOneField)):
                     continue
 
-                if field.name not in anon_fields:
+                if field.name not in anon_fields and field.name not in noop_fields:
                     errors.append(
                         f"Neuralyzer {klass.__name__} is missing field {field.name} for model {model.__name__}"
                     )
