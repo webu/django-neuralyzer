@@ -10,11 +10,13 @@ authors = [
     {name = "WebU dev team", email = "contact@webu.coop"},
 ]
 readme = "README.md"
+requires-python = ">= 3.6"
 dependencies = [
     "django>=2.2",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Framework :: Django",
     "Operating System :: OS Independent",
     "License :: OSI Approved :: MIT License",
 ]
