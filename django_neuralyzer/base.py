@@ -154,6 +154,6 @@ class BaseNeuralyzer(object):
 
         return {
             name: getattr(self, name)
-            for name, value in inspect.getmembers(self)
+            for name, value in inspect.getmembers_static(self)
             if not name.startswith("__") and name not in reserved_names
         }
