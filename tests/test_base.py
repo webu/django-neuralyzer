@@ -57,6 +57,21 @@ class BaseTestCase(TestCase):
         self.assertEqual(obj.last_name, "")
         self.assertEqual(obj.raw_data, "{1: 2}")
 
+    def test_inheritance(self):
+        class ParentNeuralyzer(BaseNeuralyzer):
+            first_name = "parent"
+            last_name = "parent"
+
+        class ChildNeuralyzer(ParentNeuralyzer):
+            last_name = "child"
+
+        obj = models.person_factory()
+
+        neuralyzer = ChildNeuralyzer()
+        neuralyzer.patch_object(obj)
+        self.assertEqual(obj.first_name, "parent")
+        self.assertEqual(obj.last_name, "child")
+
     def test_run(self):
         class Neuralyzer(BaseNeuralyzer):
             class Meta:
