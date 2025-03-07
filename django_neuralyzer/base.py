@@ -146,14 +146,26 @@ class BaseNeuralyzer(object):
 
         return OrderedDict(sorted_declarations)
 
+    @property
+    def _excluded_attributes(self):
+        meta = self.Meta
+        return getattr(meta, "noop", [])
+
     def _get_class_attributes(self):
         """Return list of class attributes, which also includes methods and
         subclasses, ignoring any magic methods and reserved attributes
+        as well as defined noop attributes
         """
         reserved_names = list(BaseNeuralyzer.__dict__.keys()) + ["Meta", "_declarations"]
 
         return {
             name: getattr(self, name)
             for name, value in inspect.getmembers_static(self)
-            if not name.startswith("__") and name not in reserved_names
+            if not name.startswith("__")
+            and name not in reserved_names
+            and name not in self._excluded_attributes
         }
+
+    class Meta:
+        noop = []
+        onetoone = {}
