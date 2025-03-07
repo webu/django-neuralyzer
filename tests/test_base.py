@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.test import TestCase
 
+from django_neuralyzer.base import NEURALYZER_NOOP
 from django_neuralyzer.base import BaseNeuralyzer as BaseBaseNeuralyzer
 from django_neuralyzer.base import lazy_attribute
 
@@ -207,13 +208,10 @@ class BaseTestCase(TestCase):
 
     def test_excluded_attributes(self):
         class Neuralyzer(BaseNeuralyzer):
-            first_name = "toto"
-
-            class Meta:
-                noop = ["first_name"]
+            first_name = NEURALYZER_NOOP
 
         obj = models.person_factory()
 
         neuralyzer = Neuralyzer()
-        neuralyzer.patch_object(obj)
-        self.assertEqual(obj.first_name, "A")
+        self.assertIn("first_name", neuralyzer._excluded_attributes)
+        self.assertNotIn("first_name", neuralyzer._get_class_attributes())

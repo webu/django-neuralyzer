@@ -8,6 +8,8 @@ from .utils import import_from_path
 
 logger = getLogger(__name__)
 
+NEURALYZER_NOOP = "__NOOP__"
+
 
 class OrderedDeclaration(object):
     """Any classes inheriting from this will have an unique global counter
@@ -148,8 +150,14 @@ class BaseNeuralyzer(object):
 
     @property
     def _excluded_attributes(self):
-        meta = self.Meta
-        return getattr(meta, "noop", [])
+        reserved_names = list(BaseNeuralyzer.__dict__.keys()) + ["Meta", "_declarations"]
+        return [
+            name
+            for name, value in inspect.getmembers_static(self)
+            if not name.startswith("__")
+            and name not in reserved_names
+            and value in [NEURALYZER_NOOP]
+        ]
 
     def _get_class_attributes(self):
         """Return list of class attributes, which also includes methods and
@@ -163,7 +171,7 @@ class BaseNeuralyzer(object):
             for name, value in inspect.getmembers_static(self)
             if not name.startswith("__")
             and name not in reserved_names
-            and name not in self._excluded_attributes
+            and value not in [NEURALYZER_NOOP]
         }
 
     class Meta:
