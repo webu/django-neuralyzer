@@ -23,12 +23,6 @@ classifiers = [
 Homepage = "https://github.com/webu/django-neuralyzer"
 Issues = "https://github.com/webu/django-neuralyzer/issues"
 
-[tool.djlint]
-    profile = "django"
-    preserve_blank_lines = true
-    format_js = false
-    format_css = true
-
 [tool.ruff]
     include = ["pyproject.toml", "django_neuralyzer/**/*.py"]
     line-length = 99
@@ -47,10 +41,7 @@ Issues = "https://github.com/webu/django-neuralyzer/issues"
     length-sort = false
     force-single-line = true
     force-sort-within-sections = true
-    known-first-party = ["webusi"]
-    known-third-party = ["parler", "wagtail", "oscar", "oscarapi", "diva", "diva_oscar", "diva_wagtail"]
     section-order = ["future", "standard-library", "pylib", "django", "third-party", "first-party", "local-folder"]
 
 [tool.ruff.lint.isort.sections]
 "django" = ["django"]
-"pylib" = ["dateutil"]
