@@ -28,23 +28,25 @@ class PersonNeuralyzer(BaseNeuralyzer):
 
 # run neuralyzer: be cautious, this will affect your current database!
 person = Person.objects.last()
+
 # neuralyze full table:
 PersonNeuralyzer().run()
+
 # neuralyze only some instance
 PersonNeuralyzer().run(filters={"pk": person.pk})
 ```
 
 ### Lazy attributes
 
-Lazy attributes can be defined as inline lambdas or methods, as shown below, using the `django_neuralyzer.lazy_attribute` function/decorator.
+Lazy attributes can be defined as inline lambdas or methods, as shown below, using the `lazy_attribute` function/decorator.
 
 ```py
-from django_neuralyzer import BaseNeuralyzer
+from django_neuralyzer.base import BaseNeuralyzer, lazy_attribute
 
 from your_app.models import Person
 
 class PersonNeuralyzer(BaseNeuralyzer):
-   name = anon.lazy_attribute(lambda o: 'x' * len(o.name))
+   name = lazy_attribute(lambda o: 'x' * len(o.name))
 
    @lazy_attribute
    def date_of_birth(self):
@@ -65,6 +67,23 @@ Ensure that all field of your model are handle by the neuralyzer:
 ```shell
 django-manage ensure_fields_are_handled
 ```
+
+If you want to ensure a field is handled, but you don't want to change its value, you can set it to `NEURALYZER_NOOP`:
+
+```py
+from django_neuralyzer.base import BaseNeuralyzer, NEURALYZER_NOOP
+
+from your_app.models import Person
+
+class PersonNeuralyzer(BaseNeuralyzer):
+   id = NEURALYZER_NOOP
+   name = lazy_attribute(lambda o: 'x' * len(o.name))
+
+   class Meta:
+      model = Person
+```
+
+this way, `ensure_fields_are_handled` will not complain that `id` is not handled.
 
 ## Why neuralyzer ?
 
