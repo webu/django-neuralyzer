@@ -1,6 +1,16 @@
 # Django Neuralyzer
 
+[![PyPi - version](https://img.shields.io/pypi/v/django-neuralyzer.svg?style=flat-square)](https://pypi.python.org/pypi/django-neuralyzer)
+[![Licence](https://img.shields.io/pypi/l/django-neuralyzer.svg?style=flat-square)](https://pypi.python.org/pypi/django-neuralyzer)
+[![Python version](https://img.shields.io/pypi/pyversions/django-neuralyzer.svg?style=flat-square)](https://pypi.python.org/pypi/django-neuralyzer)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v0.json&style=flat-square)](https://github.com/charliermarsh/ruff)
+
 Anonymize instance data according to your need (GDPR, used in not-so-safe environments... )
+
+<p align="center">
+<img src="https://github.com/webu/django-neuralyzer/blob/main/zebu-in-black.png"/>
+</p>
+
 
 **Heavily inspired by [django-anon](https://github.com/Tesorio/django-anon/)**
 
