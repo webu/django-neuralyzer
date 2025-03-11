@@ -8,7 +8,7 @@
 Anonymize instance data according to your need (GDPR, used in not-so-safe environments... )
 
 <p align="center">
-<img src="https://github.com/webu/django-neuralyzer/blob/main/zebu-in-black.png"/>
+<img src="https://github.com/webu/django-neuralyzer/blob/main/zebu-django-neuralizer.jpg"/>
 </p>
 
 
