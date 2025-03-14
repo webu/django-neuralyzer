@@ -105,7 +105,7 @@ class BaseNeuralyzer(object):
 
     def patch_object(self, obj):
         """Update object attributes with fake data provided by replacers"""
-        fields = [field for field in self._declarations if getattr(obj, field)]
+        fields = [field for field in self._declarations]
 
         for field in fields:
             replacer = self._declarations[field]
