@@ -2,6 +2,7 @@ from collections import OrderedDict
 import inspect
 from logging import getLogger
 
+from django.apps import apps
 from django.db.models import Q
 
 from .utils import import_from_path
@@ -57,7 +58,7 @@ class BaseNeuralyzer(object):
         update_fields = list(self._declarations.keys())
 
         # info used in log messages
-        model_name = self.Meta.model.__name__
+        model_name = self.get_model().__name__
 
         logger.info("Updating {}...".format(model_name))
 
@@ -86,8 +87,8 @@ class BaseNeuralyzer(object):
                         neuralyzer().run(filters={"pk": related_model.pk})
 
     def get_manager(self):
-        meta = self.Meta
-        return getattr(meta, "manager", meta.model.objects)
+        objects = self.get_model().objects
+        return getattr(self.Meta, "manager", objects)
 
     def get_queryset(self, filters=None):
         """Override this if you want to delimit the objects that should be
@@ -102,6 +103,15 @@ class BaseNeuralyzer(object):
         elif isinstance(filters, Q):
             qs = qs.filter(filters)
         return qs
+
+    @classmethod
+    def get_model(cls):
+        meta_model = cls.Meta.model
+        if isinstance(meta_model, str):
+            model = apps.get_model(meta_model)
+        else:
+            model = meta_model
+        return model
 
     def patch_object(self, obj):
         """Update object attributes with fake data provided by replacers"""
