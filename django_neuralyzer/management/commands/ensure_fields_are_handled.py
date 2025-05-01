@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
         for klass in anon_classes:
             print(f"Neuralyzer: {klass}")
-            model = klass.Meta.model
+            model = klass.get_model()
             neuralyzer = klass()
             anon_fields = neuralyzer._get_class_attributes()
             noop_fields = neuralyzer._excluded_attributes
