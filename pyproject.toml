@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-neuralyzer"
-version = "0.3.2"
+version = "0.4.0"
 description = "Anonymize specific django model for specific instance"
 authors = [
     {name = "WebU dev team", email = "contact@webu.coop"},
