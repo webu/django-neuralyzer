@@ -11,7 +11,6 @@ Anonymize instance data according to your need (GDPR, used in not-so-safe enviro
 <img src="https://github.com/webu/django-neuralyzer/blob/main/zebu-django-neuralizer.jpg"/>
 </p>
 
-
 **Heavily inspired by [django-anon](https://github.com/Tesorio/django-anon/)**
 
 Like `django-anon`, `django-neuralyzer` will help you anonymize your model instance so it can be shared among developers, helping to reproduce bugs and make performance improvements in a production-like environment.
@@ -60,7 +59,7 @@ class PersonNeuralyzer(BaseNeuralyzer):
 
    @lazy_attribute
    def date_of_birth(self):
-      # keep year and month
+      """Keep year and month"""
       return self.date_of_birth.replace(day=1)
 
    class Meta:
@@ -69,10 +68,24 @@ class PersonNeuralyzer(BaseNeuralyzer):
 
 ## Management command
 
-Ensure that all field of your model are handle by the neuralyzer:
+First, to have access to the management command, you need to register the app
 
-1. add `django_neuralyzer` at the end of your `INSTALLED_APPS`
-2. run the `ensure_fields_are_handled` command
+```py
+INSTALLED_APPS = [
+  ...
+  "django_neuralyzer",
+  ...
+]
+```
+
+2 management command are given:
+
+1. `ensure_fields_are_handled` command
+2. `export_neuralyzed_fields` command
+
+### Ensure that all fields are neuralyzed
+
+Ensure that all field of your model are handle by the neuralyzer:
 
 ```shell
 django-manage ensure_fields_are_handled
@@ -94,6 +107,18 @@ class PersonNeuralyzer(BaseNeuralyzer):
 ```
 
 this way, `ensure_fields_are_handled` will not complain that `id` is not handled.
+
+### Export neuralyzed fields
+
+It may be handy to export what fields are neuralyzed and how. Run the
+
+```shell
+django-manage export_neuralyzed_fields
+```
+
+and a `neuralyzed_fields.csv` will be created at the root of your application.
+
+In order to document the `lazy_attribute`, the docstring of the function will be used to document how this field is neuralyzed.
 
 ## Why neuralyzer ?
 
