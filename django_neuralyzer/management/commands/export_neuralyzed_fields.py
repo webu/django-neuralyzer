@@ -6,6 +6,7 @@ from django.db.models.fields.related import ManyToManyField
 from django.db.models.fields.related import OneToOneField
 
 from django_neuralyzer.base import BaseNeuralyzer
+from django_neuralyzer.base import LazyAttribute
 from django_neuralyzer.utils import get_app_submodules
 
 
@@ -49,7 +50,10 @@ class Command(BaseCommand):
 
                 neuralyzed_op = getattr(neuralyzer, field.name)
                 if callable(neuralyzed_op):
-                    neuralyzed_data = neuralyzed_op.__doc__ or "__UNDOCUMENTED__"
+                    func = neuralyzed_op
+                    if isinstance(neuralyzed_op, LazyAttribute):
+                        func = neuralyzed_op.lazy_fn
+                    neuralyzed_data = func.__doc__ or "__UNDOCUMENTED__"
                     dynamic = True
                 elif neuralyzed_op in ["", [], {}, None]:
                     neuralyzed_data = "__EMPTY__"
