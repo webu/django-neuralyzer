@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from django.core.management.base import BaseCommand
 from django.db.models.fields.related import ManyToManyField
@@ -50,6 +51,7 @@ class Command(BaseCommand):
                     )
 
         if errors:
-            logger.error("Following models have not been fully handled: \n" + "\n".join(errors))
+            print("Following models have not been fully handled: \n" + "\n".join(errors))
+            sys.exit(1)
         else:
             print("All models neuralyzed include all fields!")
