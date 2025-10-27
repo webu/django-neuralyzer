@@ -19,7 +19,9 @@ It also provide ability to target specific instance and not the whole database a
 
 ## Usage
 
-Use `django-neuralyzer.BaseNeuralyzer` to define your neuralyzer classes:
+In your application, for instance in `neuralyzers.py` files, create a class
+that inherit of `django-neuralyzer.BaseNeuralyzer` to define your neuralyzer
+classes:
 
 ```py
 from django_neuralyzer.base import BaseNeuralyzer
@@ -34,7 +36,11 @@ class PersonNeuralyzer(BaseNeuralyzer):
 
    class Meta:
       model = Person
+```
 
+Then, use the neuralyzer:
+
+```py
 # run neuralyzer: be cautious, this will affect your current database!
 person = Person.objects.last()
 
